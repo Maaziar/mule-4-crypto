@@ -100,4 +100,10 @@ vars.n_p + payload]]></ee:set-variable>
 		<set-payload value="#[vars.n_p]" doc:name="Set Payload" doc:id="7ae3ce07-988f-4b01-9cb9-3b42fb90b515" />
 		<logger level="INFO" doc:name="Logger" doc:id="a3a27f42-d625-4f53-a7b9-969929a1a514" message="Encrypted paylaod is:#[payload]" category="maz.playground.crypto" />
 	</flow>
+	<flow name="crypto-jce-key-based-decrypt-binary-files" doc:id="c1176212-c88f-4ce1-81c8-2730e0e404ff" >
+		<http:listener doc:name="Listener" doc:id="46dd4de0-8ed8-4712-a0b4-c80b7148805e" config-ref="HTTP_Listener_config" path="/jce/dec-key/file" />
+		<logger level="INFO" doc:name="Logger" doc:id="1cdd0ff4-76cb-45bc-885b-1ec40fca34c5" message="Original Payload :#[payload]" category="maz.playground.crypto" />
+		<crypto:jce-decrypt doc:name="Jce decrypt" doc:id="82582b1a-c56c-426a-a986-ab04f50eae85" config-ref="Crypto_Jce_Decrypt" algorithm="AES" keyId="aesKeyID456" />
+		<logger level="INFO" doc:name="Logger" doc:id="44fbd2cd-0d43-4b15-8e0a-077d46f3fa07" message="Decrypted paylaod is :#[payload]" category="maz.playground.crypto" />
+	</flow>
 </mule>
