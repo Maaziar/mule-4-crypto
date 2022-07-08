@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:crypto="http://www.mulesoft.org/schema/mule/crypto" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:crypto="http://www.mulesoft.org/schema/mule/crypto"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/crypto http://www.mulesoft.org/schema/mule/crypto/current/mule-crypto.xsd">
+http://www.mulesoft.org/schema/mule/crypto http://www.mulesoft.org/schema/mule/crypto/current/mule-crypto.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
 	<crypto:pgp-config name="Crypto_Pgp-Encrypt" doc:name="Crypto Pgp" doc:id="ba4e37a3-9e63-4e78-b5c1-f9c44142b8fa" publicKeyring="/Users/maaziarsadr/git/CERTIFICATES/mule-4-crypto-playground/maz-pgp-public-key.gpg">
 		<crypto:pgp-key-infos >
 			<crypto:pgp-asymmetric-key-info keyId="maz-pgp-keyID123" fingerprint="A2F2C0BE662311E9"/>
@@ -19,6 +20,9 @@ http://www.mulesoft.org/schema/mule/crypto http://www.mulesoft.org/schema/mule/c
 		<http:listener doc:name="Listener" doc:id="43a362f7-c03a-4c25-bcc8-445bf0de87a7" config-ref="HTTP_Listener_config" path="/pgp/enc"/>
 		<logger level="INFO" doc:name="Logger" doc:id="8402b9e2-c24b-4da1-87e8-c79246c7ff7b" message="Original paylaod is:#[payload]" category="maz.platground.crypto.pgp"/>
 		<crypto:pgp-encrypt doc:name="Pgp encrypt" doc:id="5ce754df-cbdd-47d7-94db-304bc9fb9522" config-ref="Crypto_Pgp-Encrypt" keyId="maz-pgp-keyID123"/>
+		<async doc:name="Async" doc:id="30403bfd-6d1a-4180-bb08-bb58ac7c1044" >
+			<file:write doc:name="Write" doc:id="7122793d-2a38-49a2-8621-1a894d27f08f" config-ref="File_Config" path='#["/Users/maaziarsadr/git/FILES/CRYPTO/"++ flow.name ++ now() as DateTime as String {format : "- yyyy-MM-dd-hhmmss"}]'/>
+		</async>
 		<logger level="INFO" doc:name="Logger" doc:id="26b50cd3-43e4-472d-b128-78142aad768a" message="Encrypted payload is:#[payload]" category="maz.platground.crypto.pgp"/>
 	</flow>
 	<flow name="crypto-pgp-decrypt" doc:id="409270af-9f39-4429-a0c4-38b2e28a6d26" >

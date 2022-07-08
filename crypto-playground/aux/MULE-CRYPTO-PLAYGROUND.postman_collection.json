@@ -130,6 +130,34 @@
 					"response": []
 				},
 				{
+					"name": "jce-key-decrypt-binary-file",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "/Users/maaziarsadr/git/FILES/CRYPTO/crypto-jce-key-based-encrypt- 2022-07-08-121752"
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/crypto/jce/dec-key/file",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"crypto",
+								"jce",
+								"dec-key",
+								"file"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "jce-key-encrypt-json-elements",
 					"request": {
 						"method": "POST",
