@@ -55,62 +55,49 @@ fromBase64(payload)]]></ee:set-payload>
 		<crypto:jce-decrypt doc:name="Jce decrypt" doc:id="c675a70a-f39f-4d92-9142-1ba384cac44c" config-ref="Crypto_Jce_Decrypt" algorithm="AES" keyId="aesKeyID456"/>
 		<logger level="INFO" doc:name="Logger" doc:id="cde22f24-8311-4c28-860d-ec510facfec6" message="Decrypted paylaod is :#[payload]" category="maz.playground.crypto"/>
 	</flow>
-	<flow name="crypto-jce-key-based-encrypt-element" doc:id="61294aeb-d727-46d1-87d9-33b69c86acbc" >
-		<http:listener doc:name="Copy_of_Listener" doc:id="eecad688-8b82-4bd7-83a4-58e1f79ec86b" config-ref="HTTP_Listener_config" path="/jce/enc-key/element" />
-		<logger level="INFO" doc:name="Copy_of_Logger" doc:id="71aa35a7-4613-494e-8a3a-87744241be4f" message="Original payload:#[payload]" category="maz.playground.crypto" />
-		<set-variable value="" doc:name="Set Variable" doc:id="e1478db9-1861-44cd-93ad-33ea4d4865ed" variableName="n_p" mimeType="application/json"/>
-		<foreach doc:name="For Each" doc:id="03abfeb0-3a2d-4bb8-8cd2-1b8fb9e5f76a" collection="#[payload]">
-			<logger level="INFO" doc:name="Logger" doc:id="e977af19-ac44-4eb4-a823-dbd3662fa372" message="#[payload]" />
-			<crypto:jce-encrypt doc:name="Jce encrypt-SSN" doc:id="5435732a-286a-44f2-bc8c-23642de5ce70" config-ref="Crypto_Jce-Encrypt" algorithm="AES" keyId="aesKeyID123" target="ssn_enc">
+	<flow name="crypto-jce-key-based-encrypt-json-elements" doc:id="61294aeb-d727-46d1-87d9-33b69c86acbc" >
+		<http:listener doc:name="Listener" doc:id="eecad688-8b82-4bd7-83a4-58e1f79ec86b" config-ref="HTTP_Listener_config" path="/jce/enc-key/json-elements" />
+		<logger level="INFO" doc:name="Logger" doc:id="71aa35a7-4613-494e-8a3a-87744241be4f" message="Original payload:#[payload]" category="maz.playground.crypto" />
+		<set-variable value="#[[]]" doc:name="Set Variable" doc:id="9196de33-fb8e-4fa1-a6b3-10f9957d1d14" variableName="n_p"/>
+		<foreach doc:name="For Each" doc:id="371db9cb-fb66-4d34-9275-85ba73a70ef6" collection="#[payload]">
+			<crypto:jce-encrypt doc:name="Jce encrypt-SSN" doc:id="51a6e77b-e8a1-4960-b059-f9e98b259b39" config-ref="Crypto_Jce-Encrypt" algorithm="AES" keyId="aesKeyID123" target="ssn_enc">
 			<crypto:content><![CDATA[#[payload.health_data.nhs_number]]]></crypto:content>
 		</crypto:jce-encrypt>
-			<crypto:jce-encrypt doc:name="Jce encrypt_NHS_Number" doc:id="e8b152ab-e2e3-4c0b-bad5-e7c7d598f79f" config-ref="Crypto_Jce-Encrypt" algorithm="AES" keyId="aesKeyID123" target="nhs_number_enc" >
+			<crypto:jce-encrypt doc:name="Jce encrypt_NHS_Number" doc:id="aa10d0d0-5b66-414e-b211-081509eb9072" config-ref="Crypto_Jce-Encrypt" algorithm="AES" keyId="aesKeyID123" target="nhs_number_enc" >
 				<crypto:content ><![CDATA[#[payload.health_data.nhs_number]]]></crypto:content>
 			</crypto:jce-encrypt>
-			<ee:transform doc:name="Transform Message" doc:id="ec95d008-41f0-414d-a056-e6c1ff4627fa" >
+			<ee:transform doc:name="Transform Message" doc:id="90c9a5f8-2456-481b-88aa-1f523fe5103e" >
 				<ee:message >
-				</ee:message>
-				<ee:variables >
-					<ee:set-variable variableName="new_payload" ><![CDATA[%dw 2.0
-output application/json
+					<ee:set-payload ><![CDATA[%dw 2.0
+import toBase64 from dw::core::Binaries
+output application/java
 ---
 {
 
-	
-		"First_Name" : payload.first_name,
-		"Last_Name:" : payload.last_name,
-		"ssn": vars.ssn_enc,
-		"nhs_number"	:vars.nhs_number_enc
+	//payload.ssn + toBase64(vars.ssn_enc) + payload.health_data.nhs_number + toBase64(vars.ssn_enc)
+	"First_Name" : payload.first_name,
+	"Last_Name:" : payload.last_name,
+	"ssn": toBase64(vars.ssn_enc),
+	"nhs_number"	:toBase64(vars.nhs_number_enc)
 	
 
-}]]></ee:set-variable>
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
 				</ee:variables>
 			</ee:transform>
-			<ee:transform doc:name="Transform Message" doc:id="e1c4b917-72bf-4b25-861b-4e53c7ad2511" >
+			<ee:transform doc:name="Transform Message" doc:id="ba88db6e-a72c-42a3-b539-44aa81e6b730" >
 				<ee:message >
-					<ee:set-payload ><![CDATA[%dw 2.0
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="n_p" ><![CDATA[%dw 2.0
 output application/json
 ---
-vars.n_p ++ vars.new_payload]]></ee:set-payload>
-				</ee:message>
+vars.n_p + payload]]></ee:set-variable>
+				</ee:variables>
 			</ee:transform>
 		</foreach>
 		<set-payload value="#[vars.n_p]" doc:name="Set Payload" doc:id="7ae3ce07-988f-4b01-9cb9-3b42fb90b515" />
-		<logger level="INFO" doc:name="Copy_of_Logger" doc:id="a3a27f42-d625-4f53-a7b9-969929a1a514" message="Encrypted paylaod is:#[payload]" category="maz.playground.crypto" />
-		<async doc:name="Copy_of_Async" doc:id="413f56b4-ccf8-4dec-a1a9-e73d3dbfc60e" >
-			<file:write doc:name="Copy_of_Write" doc:id="1ec6b7d6-c78b-4f1f-a712-4e95fc73e8be" config-ref="File_Config" path='#["/Users/maaziarsadr/git/FILES/CRYPTO/"++ flow.name ++ now() as DateTime as String {format : "- yyyy-MM-dd-hhmmss"}]' />
-		</async>
-		<ee:transform doc:name="Copy_of_To Base64" doc:id="216d70a4-5cc8-45b8-a9cf-d976fca7d007" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-
-import dw::Crypto
-import toBase64 from dw::core::Binaries
-output application/json
----
-toBase64(payload)]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<logger level="INFO" doc:name="Copy_of_Logger" doc:id="382c1c8a-1780-455b-a5dd-52391b13d36a" message="Converted to Base64:#[payload]" category="maz.playground.crypto" />
+		<logger level="INFO" doc:name="Logger" doc:id="a3a27f42-d625-4f53-a7b9-969929a1a514" message="Encrypted paylaod is:#[payload]" category="maz.playground.crypto" />
 	</flow>
 </mule>

@@ -5,12 +5,12 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/crypto http://www.mulesoft.org/schema/mule/crypto/current/mule-crypto.xsd">
-	<crypto:pgp-config name="Crypto_Pgp-Encrypt" doc:name="Crypto Pgp" doc:id="ba4e37a3-9e63-4e78-b5c1-f9c44142b8fa" publicKeyring="/Users/maaziarsadr/AnypointStudio/pf-studio-workspace/crypto-playground/src/main/resources/keys/maz-pgp-public-key.gpg">
+	<crypto:pgp-config name="Crypto_Pgp-Encrypt" doc:name="Crypto Pgp" doc:id="ba4e37a3-9e63-4e78-b5c1-f9c44142b8fa" publicKeyring="/Users/maaziarsadr/git/CERTIFICATES/mule-4-crypto-playground/maz-pgp-public-key.gpg">
 		<crypto:pgp-key-infos >
 			<crypto:pgp-asymmetric-key-info keyId="maz-pgp-keyID123" fingerprint="A2F2C0BE662311E9"/>
 		</crypto:pgp-key-infos>
 	</crypto:pgp-config>
-	<crypto:pgp-config name="Crypto_Pgp-Decrypt" doc:name="Crypto Pgp" doc:id="7ad6ac88-dccf-492b-87f7-b70efe0bfa4d" privateKeyring="/Users/maaziarsadr/AnypointStudio/pf-studio-workspace/crypto-playground/src/main/resources/keys/maz-pgp-private-key.gpg" >
+	<crypto:pgp-config name="Crypto_Pgp-Decrypt" doc:name="Crypto Pgp" doc:id="7ad6ac88-dccf-492b-87f7-b70efe0bfa4d" privateKeyring="/Users/maaziarsadr/git/CERTIFICATES/mule-4-crypto-playground/maz-pgp-private-key.gpg" >
 		<crypto:pgp-key-infos >
 			<crypto:pgp-asymmetric-key-info keyId="maz-pgp-keyID456" fingerprint="A2F2C0BE662311E9" passphrase="mazmazmaz1"/>
 		</crypto:pgp-key-infos>

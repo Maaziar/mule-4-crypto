@@ -5,12 +5,12 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/crypto http://www.mulesoft.org/schema/mule/crypto/current/mule-crypto.xsd">
-	<crypto:pgp-config name="Crypto_Pgp_Sign" doc:name="Crypto Pgp" doc:id="8ec4d8ff-16d5-4ae2-b126-4c53631dcb70" privateKeyring="/Users/maaziarsadr/AnypointStudio/pf-studio-workspace/crypto-playground/src/main/resources/keys/maz-pgp-private-key.gpg" >
+	<crypto:pgp-config name="Crypto_Pgp_Sign" doc:name="Crypto Pgp" doc:id="8ec4d8ff-16d5-4ae2-b126-4c53631dcb70" privateKeyring="/Users/maaziarsadr/git/CERTIFICATES/mule-4-crypto-playground/maz-pgp-private-key.gpg" >
 		<crypto:pgp-key-infos >
 			<crypto:pgp-asymmetric-key-info keyId="maz-pgp-keyID-678" fingerprint="A2F2C0BE662311E9" passphrase="mazmazmaz1"/>
 		</crypto:pgp-key-infos>
 	</crypto:pgp-config>
-	<crypto:pgp-config name="Crypto_Pgp_Encrypt_and_Sign" doc:name="Crypto Pgp" doc:id="50be3e3d-038f-468d-b62e-34549a66d88a" publicKeyring="/Users/maaziarsadr/AnypointStudio/pf-studio-workspace/crypto-playground/src/main/resources/keys/maz-pgp-public-key.gpg" privateKeyring="/Users/maaziarsadr/AnypointStudio/pf-studio-workspace/crypto-playground/src/main/resources/keys/maz-pgp-private-key.gpg" >
+	<crypto:pgp-config name="Crypto_Pgp_Encrypt_and_Sign" doc:name="Crypto Pgp" doc:id="50be3e3d-038f-468d-b62e-34549a66d88a" publicKeyring="/Users/maaziarsadr/git/CERTIFICATES/mule-4-crypto-playground/maz-pgp-public-key.gpg" privateKeyring="/Users/maaziarsadr/git/CERTIFICATES/mule-4-crypto-playground/maz-pgp-private-key.gpg" >
 		<crypto:pgp-key-infos >
 			<crypto:pgp-asymmetric-key-info keyId="maz_pgp_public_keyID123" fingerprint="A2F2C0BE662311E9"/>
 			<crypto:pgp-asymmetric-key-info keyId="maz_pgp_private_keyID456" fingerprint="A2F2C0BE662311E9" passphrase="mazmazmaz1" />
