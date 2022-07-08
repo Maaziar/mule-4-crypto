@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:crypto="http://www.mulesoft.org/schema/mule/crypto"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/crypto http://www.mulesoft.org/schema/mule/crypto/current/mule-crypto.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+<crypto:jce-config name="Crypto_Jce-Encrypt" doc:name="Crypto Jce" doc:id="56c7ec58-8b8f-4d22-8018-b535ca0d88c7" keystore="maz_aeskeystore.jck" type="JCEKS" password="maz_store_pass">
+		<crypto:jce-key-infos >
+			<crypto:jce-symmetric-key-info keyId="aesKeyID123" alias="aeskey" password="maz_key_pass" />
+		</crypto:jce-key-infos>
+	</crypto:jce-config>
+	<crypto:jce-config name="Crypto_Jce_Decrypt" doc:name="Crypto Jce" doc:id="e85cd7a1-eb79-4325-aea5-41c4cc2be3a8" keystore="maz_aeskeystore.jck" type="JCEKS" password="maz_store_pass">
+		<crypto:jce-key-infos >
+			<crypto:jce-symmetric-key-info keyId="aesKeyID456" alias="aeskey" password="maz_key_pass" />
+		</crypto:jce-key-infos>
+	</crypto:jce-config>
+	<flow name="crypto-jce-key-based-encrypt" doc:id="e3f95d3b-687e-4596-968a-c1e85ce75ace" >
+		<http:listener doc:name="Listener" doc:id="a6a05380-9a76-4328-9908-91ae48ecc6d0" config-ref="HTTP_Listener_config" path="/jce/enc-key"/>
+		<logger level="INFO" doc:name="Logger" doc:id="dcdb0eca-6c48-42b0-b646-c99aac1c2701" message="Original payload:#[payload]" category="maz.playground.crypto"/>
+		<crypto:jce-encrypt doc:name="Jce encrypt" doc:id="9d78ebf2-e77d-4f82-bf42-b4e60b2be73e" config-ref="Crypto_Jce-Encrypt" algorithm="AES" keyId="aesKeyID123"/>
+		<logger level="INFO" doc:name="Logger" doc:id="6c5b65ff-83ab-4972-b6cc-8a8bb3af145e" message="Encrypted paylaod is:#[payload]" category="maz.playground.crypto"/>
+		<async doc:name="Async" doc:id="f8ee6199-20dd-4462-9cfa-24870bd1edd1" >
+			<file:write doc:name="Write" doc:id="8b2651d5-0e58-4aec-ad47-55f4f7739568" config-ref="File_Config" path='#["/Users/maaziarsadr/git/FILES/CRYPTO/"++ flow.name ++ now() as DateTime as String {format : "- yyyy-MM-dd-hhmmss"}]' />
+		</async>
+		<ee:transform doc:name="To Base64" doc:id="525239c8-74c9-46a1-9414-5fd0f02b6448" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+
+import dw::Crypto
+import toBase64 from dw::core::Binaries
+output application/json
+---
+toBase64(payload)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="113a853a-ecf0-44db-8d4e-aefa58aa4e35" message="Converted to Base64:#[payload]" category="maz.playground.crypto"/>
+	</flow>
+	<flow name="crypto-jce-key-based-decrypt" doc:id="078a1f40-24d1-4a35-a424-f28e7bdbe59f" >
+		<http:listener doc:name="Listener" doc:id="56c7ec58-8b8f-4d22-8018-b535ca0d88c7" config-ref="HTTP_Listener_config" path="/jce/dec-key"/>
+		<logger level="INFO" doc:name="Logger" doc:id="e7b9b960-3ff2-4290-8046-680cfb3710c4" message="Original Payload :#[payload]" category="maz.playground.crypto"/>
+		<ee:transform doc:name="to Binary from Base64" doc:id="50c70581-127c-41fa-92c1-52836329fde4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import dw::Crypto
+import fromBase64 from dw::core::Binaries
+output application/octet-stream
+---
+fromBase64(payload)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="c7ac56a4-e9f7-4efc-94b3-a6ddf06f8034" message="Bainary Payload is:#[payload]" category="maz.playground.crypto"/>
+		<crypto:jce-decrypt doc:name="Jce decrypt" doc:id="c675a70a-f39f-4d92-9142-1ba384cac44c" config-ref="Crypto_Jce_Decrypt" algorithm="AES" keyId="aesKeyID456"/>
+		<logger level="INFO" doc:name="Logger" doc:id="cde22f24-8311-4c28-860d-ec510facfec6" message="Decrypted paylaod is :#[payload]" category="maz.playground.crypto"/>
+	</flow>
+	<flow name="crypto-jce-key-based-encrypt-element" doc:id="61294aeb-d727-46d1-87d9-33b69c86acbc" >
+		<http:listener doc:name="Copy_of_Listener" doc:id="eecad688-8b82-4bd7-83a4-58e1f79ec86b" config-ref="HTTP_Listener_config" path="/jce/enc-key/element" />
+		<logger level="INFO" doc:name="Copy_of_Logger" doc:id="71aa35a7-4613-494e-8a3a-87744241be4f" message="Original payload:#[payload]" category="maz.playground.crypto" />
+		<set-variable value="" doc:name="Set Variable" doc:id="e1478db9-1861-44cd-93ad-33ea4d4865ed" variableName="n_p" mimeType="application/json"/>
+		<foreach doc:name="For Each" doc:id="03abfeb0-3a2d-4bb8-8cd2-1b8fb9e5f76a" collection="#[payload]">
+			<logger level="INFO" doc:name="Logger" doc:id="e977af19-ac44-4eb4-a823-dbd3662fa372" message="#[payload]" />
+			<crypto:jce-encrypt doc:name="Jce encrypt-SSN" doc:id="5435732a-286a-44f2-bc8c-23642de5ce70" config-ref="Crypto_Jce-Encrypt" algorithm="AES" keyId="aesKeyID123" target="ssn_enc">
+			<crypto:content><![CDATA[#[payload.health_data.nhs_number]]]></crypto:content>
+		</crypto:jce-encrypt>
+			<crypto:jce-encrypt doc:name="Jce encrypt_NHS_Number" doc:id="e8b152ab-e2e3-4c0b-bad5-e7c7d598f79f" config-ref="Crypto_Jce-Encrypt" algorithm="AES" keyId="aesKeyID123" target="nhs_number_enc" >
+				<crypto:content ><![CDATA[#[payload.health_data.nhs_number]]]></crypto:content>
+			</crypto:jce-encrypt>
+			<ee:transform doc:name="Transform Message" doc:id="ec95d008-41f0-414d-a056-e6c1ff4627fa" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="new_payload" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+
+	
+		"First_Name" : payload.first_name,
+		"Last_Name:" : payload.last_name,
+		"ssn": vars.ssn_enc,
+		"nhs_number"	:vars.nhs_number_enc
+	
+
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<ee:transform doc:name="Transform Message" doc:id="e1c4b917-72bf-4b25-861b-4e53c7ad2511" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.n_p ++ vars.new_payload]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</foreach>
+		<set-payload value="#[vars.n_p]" doc:name="Set Payload" doc:id="7ae3ce07-988f-4b01-9cb9-3b42fb90b515" />
+		<logger level="INFO" doc:name="Copy_of_Logger" doc:id="a3a27f42-d625-4f53-a7b9-969929a1a514" message="Encrypted paylaod is:#[payload]" category="maz.playground.crypto" />
+		<async doc:name="Copy_of_Async" doc:id="413f56b4-ccf8-4dec-a1a9-e73d3dbfc60e" >
+			<file:write doc:name="Copy_of_Write" doc:id="1ec6b7d6-c78b-4f1f-a712-4e95fc73e8be" config-ref="File_Config" path='#["/Users/maaziarsadr/git/FILES/CRYPTO/"++ flow.name ++ now() as DateTime as String {format : "- yyyy-MM-dd-hhmmss"}]' />
+		</async>
+		<ee:transform doc:name="Copy_of_To Base64" doc:id="216d70a4-5cc8-45b8-a9cf-d976fca7d007" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+
+import dw::Crypto
+import toBase64 from dw::core::Binaries
+output application/json
+---
+toBase64(payload)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Copy_of_Logger" doc:id="382c1c8a-1780-455b-a5dd-52391b13d36a" message="Converted to Base64:#[payload]" category="maz.playground.crypto" />
+	</flow>
+</mule>

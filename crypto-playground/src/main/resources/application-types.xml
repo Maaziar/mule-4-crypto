@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="patients" format="json">
+      <types:shape format="weave" example="examples/patients-10.json"><![CDATA[%dw 2.0
+
+type patients = Array<{|  first_name: String,   last_name: String,   email: String,   ssn: String,   gender: String,   address: {|    phone: String,     postal_code: String  |},   health_data: {|    nhs_number: String,     drug_name: String,     fda_ndc_code: String,     drug_company: String  |}|}> {"example": "[{\\\"first_name\\\":\\\"Sibyl\\\",\\\"last_name\\\":\\\"Kilmaster\\\",\\\"email\\\":\\\"skilmaster0@noaa.gov\\\",\\\"ssn\\\":\\\"561-64-8777\\\",\\\"gender\\\":\\\"Female\\\",\\\"address\\\":{\\\"phone\\\":\\\"(651) 2045815\\\",\\\"postal_code\\\":\\\"976 33\\\"},\\\"health_data\\\":{\\\"nhs_number\\\":\\\"0724948678\\\",\\\"drug_name\\\":\\\"Foaming Antibacterial Handwash\\\",\\\"fda_ndc_code\\\":\\\"50865-640\\\",\\\"drug_company\\\":\\\"Kutol Products Company, Inc\\\"}},{\\\"first_name\\\":\\\"Howey\\\",\\\"last_name\\\":\\\"Wilce\\\",\\\"email\\\":\\\"hwilce1@blogtalkradio.com\\\",\\\"ssn\\\":\\\"564-11-7060\\\",\\\"gender\\\":\\\"Male\\\",\\\"address\\\":{\\\"phone\\\":\\\"(857) 9762159\\\",\\\"postal_code\\\":null},\\\"health_data\\\":{\\\"nhs_number\\\":\\\"9544471146\\\",\\\"drug_name\\\":\\\"TITANIUM DIOXIDE, ZINC OXIDE\\\",\\\"fda_ndc_code\\\":\\\"22201-3001\\\",\\\"drug_company\\\":\\\"CHARMZONE CO LTD\\\"}},{\\\"first_name\\\":\\\"Mic\\\",\\\"last_name\\\":\\\"Harrie\\\",\\\"email\\\":\\\"mharrie2@geocities.com\\\",\\\"ssn\\\":\\\"494-04-3969\\\",\\\"gender\\\":\\\"Male\\\",\\\"address\\\":{\\\"phone\\\":\\\"(900) 3223231\\\",\\\"postal_code\\\":\\\"87500-000\\\"},\\\"health_data\\\":{\\\"nhs_number\\\":\\\"7218452752\\\",\\\"drug_name\\\":\\\"Acetaminophen, Diphenhydramine HCl\\\",\\\"fda_ndc_code\\\":\\\"36800-438\\\",\\\"drug_company\\\":\\\"Topco Associates LLC (Top Care)\\\"}},{\\\"first_name\\\":\\\"Kevon\\\",\\\"last_name\\\":\\\"Goozee\\\",\\\"email\\\":\\\"kgoozee3@tiny.cc\\\",\\\"ssn\\\":\\\"469-12-7013\\\",\\\"gender\\\":\\\"Male\\\",\\\"address\\\":{\\\"phone\\\":\\\"(942) 1481398\\\",\\\"postal_code\\\":null},\\\"health_data\\\":{\\\"nhs_number\\\":\\\"9035223799\\\",\\\"drug_name\\\":\\\"PROPOFOL\\\",\\\"fda_ndc_code\\\":\\\"63323-270\\\",\\\"drug_company\\\":\\\"APP Pharmaceuticals, LLC\\\"}},{\\\"first_name\\\":\\\"Meredeth\\\",\\\"last_name\\\":\\\"Gillfillan\\\",\\\"email\\\":\\\"mgillfillan4@posterous.com\\\",\\\"ssn\\\":\\\"466-94-4103\\\",\\\"gender\\\":\\\"Male\\\",\\\"address\\\":{\\\"phone\\\":\\\"(829) 8904874\\\",\\\"postal_code\\\":\\\"623462\\\"},\\\"health_data\\\":{\\\"nhs_number\\\":\\\"7479101198\\\",\\\"drug_name\\\":\\\"Acetaminophen, Dextromethorphan HBr, Guaifenesin, Phenylephrine HCl\\\",\\\"fda_ndc_code\\\":\\\"55316-500\\\",\\\"drug_company\\\":\\\"DZA Brands LLC\\\"}},{\\\"first_name\\\":\\\"Krystal\\\",\\\"last_name\\\":\\\"Andrelli\\\",\\\"email\\\":\\\"kandrelli5@ehow.com\\\",\\\"ssn\\\":\\\"536-82-9878\\\",\\\"gender\\\":\\\"Female\\\",\\\"address\\\":{\\\"phone\\\":\\\"(579) 8935650\\\",\\\"postal_code\\\":\\\"747 44\\\"},\\\"health_data\\\":{\\\"nhs_number\\\":\\\"3994089298\\\",\\\"drug_name\\\":\\\"DOCUSATE SODIUM\\\",\\\"fda_ndc_code\\\":\\\"59995-004\\\",\\\"drug_company\\\":\\\"Robinson Pharma, Inc.\\\"}},{\\\"first_name\\\":\\\"Elmer\\\",\\\"last_name\\\":\\\"Ewers\\\",\\\"email\\\":\\\"eewers6@oakley.com\\\",\\\"ssn\\\":\\\"657-31-4577\\\",\\\"gender\\\":\\\"Male\\\",\\\"address\\\":{\\\"phone\\\":\\\"(820) 8256411\\\",\\\"postal_code\\\":null},\\\"health_data\\\":{\\\"nhs_number\\\":\\\"7961701311\\\",\\\"drug_name\\\":\\\"Dexbrompheniramine Maleate, Dextromethorphan, Phenylephrine\\\",\\\"fda_ndc_code\\\":\\\"11026-2675\\\",\\\"drug_company\\\":\\\"Seyer Pharmatec, Inc.\\\"}},{\\\"first_name\\\":\\\"Benetta\\\",\\\"last_name\\\":\\\"Moreby\\\",\\\"email\\\":\\\"bmoreby7@dagondesign.com\\\",\\\"ssn\\\":\\\"529-11-2014\\\",\\\"gender\\\":\\\"Non-binary\\\",\\\"address\\\":{\\\"phone\\\":\\\"(230) 7595369\\\",\\\"postal_code\\\":null},\\\"health_data\\\":{\\\"nhs_number\\\":\\\"7040636530\\\",\\\"drug_name\\\":\\\"Treatment Set TS350393\\\",\\\"fda_ndc_code\\\":\\\"49288-0933\\\",\\\"drug_company\\\":\\\"Antigen Laboratories, Inc.\\\"}},{\\\"first_name\\\":\\\"Demetra\\\",\\\"last_name\\\":\\\"Fantini\\\",\\\"email\\\":\\\"dfantini8@discovery.com\\\",\\\"ssn\\\":\\\"480-07-6816\\\",\\\"gender\\\":\\\"Female\\\",\\\"address\\\":{\\\"phone\\\":\\\"(542) 4706722\\\",\\\"postal_code\\\":\\\"1126\\\"},\\\"health_data\\\":{\\\"nhs_number\\\":\\\"3480473822\\\",\\\"drug_name\\\":\\\"Celery\\\",\\\"fda_ndc_code\\\":\\\"0268-6120\\\",\\\"drug_company\\\":\\\"ALK-Abello, Inc.\\\"}},{\\\"first_name\\\":\\\"Concettina\\\",\\\"last_name\\\":\\\"Cassell\\\",\\\"email\\\":\\\"ccassell9@sun.com\\\",\\\"ssn\\\":\\\"563-64-7264\\\",\\\"gender\\\":\\\"Female\\\",\\\"address\\\":{\\\"phone\\\":\\\"(377) 2893309\\\",\\\"postal_code\\\":null},\\\"health_data\\\":{\\\"nhs_number\\\":\\\"3186778220\\\",\\\"drug_name\\\":\\\"Ethyl Alcohol\\\",\\\"fda_ndc_code\\\":\\\"57337-059\\\",\\\"drug_company\\\":\\\"Rejoice International\\\"}}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#5435732a-286a-44f2-bc8c-23642de5ce70">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="patients"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#ec95d008-41f0-414d-a056-e6c1ff4627fa">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="patients"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

@@ -1,0 +1,25 @@
+Following is command to generate key from command on MAC
+
+keytool -genseckey -keystore /Users/maaziarsadr/git/CERTIFICATES/maz_aeskeystore.jck -storetype jceks -storepass maz_store_pass -keyalg AES -keysize 128 -alias aeskey -keypass maz_key_pass
+
+then copy the certifcate to src/main/resources
+
+
+For PGP use GPG
+
+gpg --gen-key
+
+gpg --list-secret-keys --keyid-format LONG
+
+gpg --output /Users/maaziarsadr/git/CERTIFICATES/maz-pgp-public-key.gpg --export maaziars@appnovation.com
+
+gpg --export-secret-keys  832D36FFC74E04D6F3DF571AA2F2C0BE662311E9 > /Users/maaziarsadr/git/CERTIFICATES/maz-pgp-private-key.gpg
+
+
+
+passphrase mazmazmaz1
+
+sec   rsa3072/A2F2C0BE662311E9 2022-07-04 [SC] [expires: 2024-07-03]
+      832D36FFC74E04D6F3DF571AA2F2C0BE662311E9
+uid                 [ultimate] mule-pgp-test <maaziars@appnovation.com>
+ssb   rsa3072/C9C96C76CBF70826 2022-07-04 [E] [expires: 2024-07-03]

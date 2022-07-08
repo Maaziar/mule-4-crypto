@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:crypto="http://www.mulesoft.org/schema/mule/crypto" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/crypto http://www.mulesoft.org/schema/mule/crypto/current/mule-crypto.xsd">
+	<flow name="crypto-xml-encrypt" doc:id="cb2a693b-afa8-4ac7-b715-c3bcb5c7af8a">
+		<http:listener doc:name="Listener" doc:id="76c256cf-9bb4-4074-9d3a-9da874e282a1" config-ref="HTTP_Listener_config" path="/xml/enc" />
+		<logger level="INFO" doc:name="Logger" doc:id="543b877c-d7da-4e3f-9d68-96068937fff3" message="Original payload is:#[payload]" category="maz.platground.crypto.xml" />
+		<crypto:xml-encrypt doc:name="Xml encrypt" doc:id="b5438c47-a90e-4c01-abb8-78b5915ccb13" config-ref="Crypto_Jce-Encrypt" keyId="aesKeyID123" />
+		<logger level="INFO" doc:name="Logger" doc:id="839a3af7-9e8b-48ed-ab08-67bbdcb45a9d" message="Encrypted paylaod is:#[payload]" category="maz.platground.crypto.xml" />
+	</flow>
+	<flow name="crypto-xml-encrypt-decryptFlow" doc:id="7f4d1a3f-40da-442c-82fd-0c473e6d980d" >
+		<http:listener doc:name="Listener" doc:id="2ec9838d-1a17-4041-a9cc-21b1e9a96744" config-ref="HTTP_Listener_config" path="/xml/dec"/>
+		<logger level="INFO" doc:name="Logger" doc:id="55d70a18-0e71-4640-97b4-76586a7b8451" message="Original Paylaod is:#[payload]" category="maz.platground.crypto.xml"/>
+		<crypto:xml-decrypt doc:name="Xml decrypt" doc:id="07fcafd0-9b88-43e0-8750-4ec1ffe6666a" config-ref="Crypto_Jce_Decrypt" keyId="aesKeyID456"/>
+		<logger level="INFO" doc:name="Logger" doc:id="09e8769f-3624-45a1-8629-e83d7a222d48" message="Decrypted paylaod is :#[payload]" category="maz.platground.crypto.xml"/>
+	</flow>
+	<flow name="crypto-xml-encrypt-single-element" doc:id="b7887604-d653-4750-9500-ae88d9ba6564">
+		<http:listener doc:name="Listener" doc:id="ebab9eeb-e636-4a60-b7cc-711e787f2c7b" config-ref="HTTP_Listener_config" path="/xml/enc/element" />
+		<logger level="INFO" doc:name="Logger" doc:id="13f5f98e-bf18-4c67-8a49-2a42b5d75e68" message="Original payload is:#[payload]" category="maz.platground.crypto.xml" />
+		<crypto:xml-encrypt doc:name="Xml encrypt -Health Data Element" doc:id="be1a3a73-4784-42d1-ad88-108f690e87a3" config-ref="Crypto_Jce-Encrypt" keyId="aesKeyID123" elementPath="/patients/person/health_data" />
+		<logger level="INFO" doc:name="Logger" doc:id="ff7b6048-621f-455d-ae42-f9b210d0d15c" message="Encrypted paylaod is:#[payload]" category="maz.platground.crypto.xml" />
+	</flow>
+	<flow name="crypto-xml-encrypt-multiple-elements" doc:id="2b4fb19a-0705-4a98-bd34-fc3a8d3515be">
+		<http:listener doc:name="Listener" doc:id="d82b601c-640c-411e-bb79-590cd2927141" config-ref="HTTP_Listener_config" path="/xml/enc/elements" />
+		<logger level="INFO" doc:name="Logger" doc:id="7807c086-605a-4658-964b-fd1993368c3f" message="Original payload is:#[payload]" category="maz.platground.crypto.xml" />
+		<crypto:xml-encrypt doc:name="Xml encrypt - Health Data Element" doc:id="5cda00a2-7be1-4312-808e-5277facf7b43" config-ref="Crypto_Jce-Encrypt" elementPath="/patients/person/health_data" keyId="aesKeyID123" />
+		<crypto:xml-encrypt doc:name="Xml encrypt - SSN  Elelement" doc:id="efedf4fa-56e0-4e97-9137-5b73bbae8d29" config-ref="Crypto_Jce-Encrypt" elementPath="/patients/person/ssn" keyId="aesKeyID123" />
+		<logger level="INFO" doc:name="Logger" doc:id="2f38c472-8d0c-4f1e-965b-8f7c5df2305e" message="Encrypted paylaod is:#[payload]" category="maz.platground.crypto.xml" />
+	</flow>
+</mule>

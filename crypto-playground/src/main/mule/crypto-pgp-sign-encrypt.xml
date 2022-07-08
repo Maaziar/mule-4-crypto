@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:crypto="http://www.mulesoft.org/schema/mule/crypto" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/crypto http://www.mulesoft.org/schema/mule/crypto/current/mule-crypto.xsd">
+	<crypto:pgp-config name="Crypto_Pgp_Sign" doc:name="Crypto Pgp" doc:id="8ec4d8ff-16d5-4ae2-b126-4c53631dcb70" privateKeyring="/Users/maaziarsadr/AnypointStudio/pf-studio-workspace/crypto-playground/src/main/resources/keys/maz-pgp-private-key.gpg" >
+		<crypto:pgp-key-infos >
+			<crypto:pgp-asymmetric-key-info keyId="maz-pgp-keyID-678" fingerprint="A2F2C0BE662311E9" passphrase="mazmazmaz1"/>
+		</crypto:pgp-key-infos>
+	</crypto:pgp-config>
+	<crypto:pgp-config name="Crypto_Pgp_Encrypt_and_Sign" doc:name="Crypto Pgp" doc:id="50be3e3d-038f-468d-b62e-34549a66d88a" publicKeyring="/Users/maaziarsadr/AnypointStudio/pf-studio-workspace/crypto-playground/src/main/resources/keys/maz-pgp-public-key.gpg" privateKeyring="/Users/maaziarsadr/AnypointStudio/pf-studio-workspace/crypto-playground/src/main/resources/keys/maz-pgp-private-key.gpg" >
+		<crypto:pgp-key-infos >
+			<crypto:pgp-asymmetric-key-info keyId="maz_pgp_public_keyID123" fingerprint="A2F2C0BE662311E9"/>
+			<crypto:pgp-asymmetric-key-info keyId="maz_pgp_private_keyID456" fingerprint="A2F2C0BE662311E9" passphrase="mazmazmaz1" />
+		</crypto:pgp-key-infos>
+	</crypto:pgp-config>
+	<flow name="crypto-pgp-sign" doc:id="ca66f44b-d492-4f40-afed-e63576187c56" >
+		<http:listener doc:name="Listener" doc:id="049644ab-58b5-4eb7-af9e-7ef46e3b852e" config-ref="HTTP_Listener_config" path="/pgp/sign"/>
+		<logger level="INFO" doc:name="Logger" doc:id="92b63b56-f5cf-4beb-8331-0de5a81386d5" category="maz.platground.crypto.pgp" message="Original payload is:#[payload]"/>
+		<crypto:pgp-sign doc:name="Pgp sign" doc:id="d953bb4c-feae-4149-9c2d-554bedcbe7e2" config-ref="Crypto_Pgp_Sign" keyId="maz-pgp-keyID-678"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f4e21c82-744f-4f3b-9f45-813ad1c0db2e" message="Signed... paylaod is:#[payload]" category="maz.platground.crypto.pgp"/>
+	</flow>
+	<flow name="crypto-pgp-encrypt-and-sign" doc:id="13e86b33-0ef3-41ad-a986-77d74b4559de" >
+		<http:listener doc:name="Listener" doc:id="6579eb95-bfd5-4878-88e1-909fb38b3cb5" config-ref="HTTP_Listener_config" path="/pgp/enc-sign" />
+		<logger level="INFO" doc:name="Logger" doc:id="b0466093-32f0-4763-989d-87c009f90a10" message="Original payload is:#[payload]" category="maz.platground.crypto.pgp" />
+		<crypto:pgp-encrypt-and-sign doc:name="Pgp encrypt and sign" doc:id="e5a8760f-e034-4741-8c3b-7571929a0a08" config-ref="Crypto_Pgp_Encrypt_and_Sign">
+			<crypto:encryption-key-selection keyId="maz_pgp_public_keyID123"/>
+			<crypto:sign-key-selection keyId="maz_pgp_private_keyID456"/>
+		</crypto:pgp-encrypt-and-sign>
+		<logger level="INFO" doc:name="Logger" doc:id="1f2f8c89-b8cd-4eb6-a265-da97c91a6b8d" message="Encrypted and Signed... paylaod is:#[payload]" category="maz.platground.crypto.pgp" />
+	</flow>
+</mule>

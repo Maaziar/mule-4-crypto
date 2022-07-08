@@ -1,0 +1,54 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [],
+    "properties": {
+      "first_name": {
+        "type": "string"
+      },
+      "last_name": {
+        "type": "string"
+      },
+      "email": {
+        "type": "string"
+      },
+      "ssn": {
+        "type": "string"
+      },
+      "gender": {
+        "type": "string"
+      },
+      "address": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "phone": {
+            "type": "string"
+          },
+          "postal_code": {
+            "type": [ "string", "null" ]
+          }
+        }
+      },
+      "health_data": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "nhs_number": {
+            "type": "string"
+          },
+          "drug_name": {
+            "type": "string"
+          },
+          "fda_ndc_code": {
+            "type": "string"
+          },
+          "drug_company": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
