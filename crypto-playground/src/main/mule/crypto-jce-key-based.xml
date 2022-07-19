@@ -23,11 +23,11 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 		<crypto:jce-encrypt doc:name="Jce encrypt" doc:id="9d78ebf2-e77d-4f82-bf42-b4e60b2be73e" config-ref="Crypto_Jce-Encrypt" algorithm="AES" keyId="aesKeyID123"/>
 		<logger level="INFO" doc:name="Logger" doc:id="6c5b65ff-83ab-4972-b6cc-8a8bb3af145e" message="Encrypted paylaod is:#[payload]" category="maz.playground.crypto"/>
 		<async doc:name="Async" doc:id="f8ee6199-20dd-4462-9cfa-24870bd1edd1" >
-			<file:write doc:name="Write" doc:id="8b2651d5-0e58-4aec-ad47-55f4f7739568" config-ref="File_Config" path='#["/Users/maaziarsadr/git/FILES/CRYPTO/"++ flow.name ++ now() as DateTime as String {format : "- yyyy-MM-dd-hhmmss"}]' />
+			<file:write doc:name="Write as Binary" doc:id="8b2651d5-0e58-4aec-ad47-55f4f7739568" config-ref="File_Config" path='#["/Users/maaziarsadr/git/FILES/CRYPTO/"++ flow.name ++"-Binary-"++ now() as DateTime as String {format : "- yyyy-MM-dd-hhmmss"}]' />
 		</async>
-		<ee:transform doc:name="To Base64" doc:id="525239c8-74c9-46a1-9414-5fd0f02b6448" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<ee:transform doc:name="To Base64" doc:id="525239c8-74c9-46a1-9414-5fd0f02b6448">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 
 import dw::Crypto
 import toBase64 from dw::core::Binaries
@@ -36,7 +36,7 @@ output application/json
 toBase64(payload)]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="113a853a-ecf0-44db-8d4e-aefa58aa4e35" message="Converted to Base64:#[payload]" category="maz.playground.crypto"/>
+		<logger level="INFO" doc:name="Logger" doc:id="113a853a-ecf0-44db-8d4e-aefa58aa4e35" message="Converted to Base64: #[payload]" category="maz.playground.crypto"/>
 	</flow>
 	<flow name="crypto-jce-key-based-decrypt" doc:id="078a1f40-24d1-4a35-a424-f28e7bdbe59f" >
 		<http:listener doc:name="Listener" doc:id="56c7ec58-8b8f-4d22-8018-b535ca0d88c7" config-ref="HTTP_Listener_config" path="/jce/dec-key"/>
